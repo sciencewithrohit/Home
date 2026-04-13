@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SciencewithRohit — Science for Every Age</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* === RESET === */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Nunito',sans-serif;background:#F8FBF8;color:#333;overflow-x:hidden;}
+
+/* === PASSWORD GATE === */
+#PG{display:none;position:fixed;inset:0;z-index:10000;
+  background:rgba(5,15,8,.97);
+  justify-content:center;align-items:center;flex-direction:column;}
+#PG.on{display:flex;}
+#PB{background:linear-gradient(160deg,#0D3D14,#071A0B);
+  border:2px solid #4CAF50;border-radius:18px;
+  padding:44px 48px;width:min(420px,92vw);text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.7);}
+#PB h3{font-family:'Playfair Display',serif;font-size:22px;color:#FFD700;margin-bottom:6px;}
+#PB p{font-size:13px;color:#81C784;margin-bottom:24px;}
+#PI{width:100%;background:#071A0B;border:1.5px solid #2E7D32;
+  border-radius:10px;color:#fff;padding:13px 16px;font-size:17px;
+  font-family:'Nunito',sans-serif;text-align:center;letter-spacing:5px;
+  margin-bottom:8px;outline:none;transition:border-color .2s;}
+#PI:focus{border-color:#4CAF50;}
+#PE{color:#EF9A9A;font-size:12px;min-height:16px;margin-bottom:10px;}
+#PS{width:100%;background:#4CAF50;color:#fff;border:none;
+  border-radius:22px;padding:12px;font-size:15px;font-weight:800;
+  cursor:pointer;font-family:'Nunito',sans-serif;transition:background .2s;}
+#PS:hover{background:#388E3C;}
+#PC{margin-top:10px;background:none;border:none;color:#66BB6A;
+  font-size:13px;cursor:pointer;text-decoration:underline;}
+
+/* === ADMIN OVERLAY === */
+#AO{display:none;position:fixed;inset:0;z-index:9999;
+  background:rgba(5,15,8,.96);overflow-y:auto;padding:20px 12px;}
+#AO.on{display:block;}
+#AP{background:linear-gradient(160deg,#0D3D14,#071A0B);
+  border:2px solid #4CAF50;border-radius:18px;
+  max-width:680px;margin:0 auto;padding:36px 40px;}
+#AP h2{font-family:'Playfair Display',serif;font-size:24px;
+  color:#FFD700;text-align:center;margin-bottom:26px;}
+.ase{font-size:10px;font-weight:800;color:#66BB6A;letter-spacing:2.5px;
+  border-bottom:1px solid #1B5E20;padding-bottom:5px;margin:20px 0 12px;}
+.tr{display:flex;align-items:center;justify-content:space-between;
+  padding:9px 0;border-bottom:1px solid rgba(76,175,80,.12);gap:10px;}
+.ti{flex:1;}.tl{color:rgba(255,255,255,.9);font-size:14px;font-weight:700;}
+.td{color:#66BB6A;font-size:11px;margin-top:1px;}
+.sw{position:relative;display:inline-block;width:50px;height:26px;flex-shrink:0;}
+.sw input{opacity:0;width:0;height:0;}
+.sk{position:absolute;inset:0;border-radius:26px;cursor:pointer;
+  background:#1B5E20;transition:.3s;}
+.sk:before{content:"";position:absolute;height:18px;width:18px;
+  border-radius:50%;bottom:4px;left:4px;
+  background:rgba(255,255,255,.45);transition:.3s;}
+.sw input:checked+.sk{background:#4CAF50;}
+.sw input:checked+.sk:before{transform:translateX(24px);background:#fff;}
+.ai{width:100%;background:#071A0B;border:1.5px solid #2E7D32;
+  border-radius:8px;color:#fff;padding:9px 12px;font-size:13px;
+  font-family:'Nunito',sans-serif;margin-top:5px;resize:vertical;
+  outline:none;transition:border-color .2s;}
+.ai:focus{border-color:#4CAF50;}
+.al{color:#A5D6A7;font-size:12px;font-weight:600;display:block;margin-top:9px;}
+.ab{padding:9px 20px;border-radius:20px;font-size:12px;font-weight:800;
+  cursor:pointer;font-family:'Nunito',sans-serif;border:none;margin-top:7px;}
+.gn{background:#4CAF50;color:#fff;}.gn:hover{background:#388E3C;}
+.gl{background:#F9A825;color:#0D2137;}.gl:hover{background:#F57F17;}
+.rd{background:#C62828;color:#fff;}.rd:hover{background:#8B0000;}
+.ar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;justify-content:flex-end;}
+.am{font-size:11px;min-height:14px;margin-top:3px;}
+.am.ok{color:#A5D6A7;}.am.er{color:#EF9A9A;}
+
+/* EDIT BANNER */
+#EB{display:none;position:fixed;top:0;left:0;right:0;z-index:9998;
+  background:#4CAF50;color:#fff;font-size:13px;font-weight:800;
+  text-align:center;padding:7px;letter-spacing:.5px;}
+#EB.on{display:block;}
+body.em nav,body.em .hero{margin-top:33px;}
+
+/* ADMIN BUTTON */
+#ABT{position:fixed;bottom:20px;right:20px;z-index:9997;
+  background:#1B5E20;border:2px solid #4CAF50;color:#fff;
+  font-size:11px;font-weight:800;padding:8px 15px;border-radius:26px;
+  cursor:pointer;opacity:.35;transition:opacity .2s;
+  font-family:'Nunito',sans-serif;letter-spacing:.5px;}
+#ABT:hover{opacity:1;}
+
+/* === NAV === */
+nav{position:sticky;top:0;z-index:200;background:#1B5E20;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 40px;box-shadow:0 2px 20px rgba(0,0,0,.3);}
+.nb{font-family:'Playfair Display',serif;font-size:20px;
+  font-weight:900;color:#fff;letter-spacing:1px;}
+.nb span{color:#F9A825;}
+.nl{display:flex;gap:26px;}
+.nl a{color:rgba(255,255,255,.85);text-decoration:none;
+  font-size:14px;font-weight:700;letter-spacing:1px;transition:color .2s;}
+.nl a:hover{color:#F9A825;}
+.nc{background:#F9A825!important;color:#0D2137!important;
+  padding:8px 20px;border-radius:24px;font-weight:800!important;}
+
+/* === HERO === */
+.hero{background:linear-gradient(135deg,#1B5E20 0%,#0A3D12 50%,#1B2F1A 100%);
+  min-height:90vh;display:grid;grid-template-columns:1fr 1fr;
+  align-items:center;gap:60px;padding:80px 60px;
+  position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 20% 80%,rgba(249,168,37,.08),transparent 50%),
+              radial-gradient(circle at 80% 20%,rgba(255,255,255,.04),transparent 50%);}
+.ld{position:absolute;font-size:110px;opacity:.04;
+  animation:lf 8s ease-in-out infinite;}
+.ld:nth-child(1){top:10%;left:5%;}
+.ld:nth-child(2){bottom:10%;right:5%;animation-delay:3s;font-size:75px;}
+.ld:nth-child(3){top:50%;left:45%;animation-delay:6s;font-size:55px;}
+@keyframes lf{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-20px) rotate(5deg)}}
+.ht{position:relative;z-index:2;}
+.hb{display:inline-block;background:#F9A825;color:#0D2137;
+  font-size:11px;font-weight:800;padding:6px 16px;
+  border-radius:20px;letter-spacing:2px;text-transform:uppercase;margin-bottom:20px;}
+.hti{font-family:'Playfair Display',serif;font-size:clamp(34px,5vw,58px);
+  font-weight:900;color:#fff;line-height:1.1;margin-bottom:18px;}
+.hti span{color:#F9A825;}
+.hs{font-size:17px;color:rgba(255,255,255,.8);line-height:1.6;
+  margin-bottom:30px;max-width:480px;}
+.hst{display:flex;gap:30px;margin-bottom:34px;}
+.sn{font-family:'Playfair Display',serif;font-size:30px;
+  font-weight:900;color:#F9A825;text-align:center;}
+.sl{font-size:11px;color:rgba(255,255,255,.6);
+  font-weight:700;letter-spacing:1px;text-align:center;}
+.hbtn{display:flex;gap:14px;flex-wrap:wrap;}
+.bp{background:#F9A825;color:#0D2137;padding:15px 34px;
+  border-radius:50px;font-size:15px;font-weight:800;
+  text-decoration:none;box-shadow:0 6px 20px rgba(249,168,37,.4);
+  transition:transform .2s,box-shadow .2s;display:inline-block;}
+.bp:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(249,168,37,.5);}
+.bs{background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.3);
+  color:#fff;padding:13px 32px;border-radius:50px;
+  font-size:15px;font-weight:700;text-decoration:none;
+  transition:background .2s;display:inline-block;}
+.bs:hover{background:rgba(255,255,255,.2);}
+.hv{position:relative;z-index:2;display:flex;flex-direction:column;
+  align-items:center;gap:14px;}
+.vw{width:100%;max-width:480px;aspect-ratio:16/9;
+  background:rgba(0,0,0,.3);border-radius:16px;
+  border:2px solid rgba(255,255,255,.1);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.vw iframe{width:100%;height:100%;border:none;}
+.vp{color:rgba(255,255,255,.35);font-size:12px;text-align:center;
+  padding:16px;line-height:1.8;letter-spacing:.5px;}
+.vl{font-size:13px;color:rgba(255,255,255,.55);font-style:italic;}
+
+/* === PILLARS === */
+.sec{padding:80px 60px;background:#F8FBF8;}
+.st{font-family:'Playfair Display',serif;font-size:clamp(26px,4vw,40px);
+  font-weight:900;color:#1B5E20;text-align:center;margin-bottom:10px;}
+.ss{text-align:center;color:#666;font-size:15px;margin-bottom:48px;
+  max-width:580px;margin-left:auto;margin-right:auto;}
+.pg{display:grid;grid-template-columns:repeat(3,1fr);
+  gap:22px;max-width:1080px;margin:0 auto;}
+.pc{background:#fff;border-radius:20px;padding:34px 26px;
+  box-shadow:0 4px 24px rgba(27,94,32,.12);border-top:4px solid #1B5E20;
+  transition:transform .3s,box-shadow .3s;position:relative;overflow:hidden;}
+.pc::before{content:'';position:absolute;top:0;right:0;
+  width:80px;height:80px;background:#E8F5E9;
+  border-radius:0 0 0 80px;opacity:.5;}
+.pc:hover{transform:translateY(-8px);
+  box-shadow:0 12px 38px rgba(27,94,32,.18);}
+.pi{font-size:42px;margin-bottom:14px;display:block;}
+.pn{font-size:11px;font-weight:800;color:#E65100;
+  letter-spacing:2px;margin-bottom:7px;}
+.ptt{font-family:'Playfair Display',serif;font-size:19px;
+  font-weight:700;color:#0D2137;margin-bottom:9px;}
+.pd{font-size:13.5px;color:#666;line-height:1.6;margin-bottom:14px;}
+.pk{font-size:12px;font-weight:800;color:#1B5E20;
+  background:#E8F5E9;padding:4px 12px;border-radius:18px;display:inline-block;}
+
+/* === EPISODES === */
+.esec{padding:80px 60px;background:#F8FBF8;}
+.eg{display:grid;grid-template-columns:repeat(3,1fr);
+  gap:22px;max-width:1080px;margin:0 auto;}
+.ec{background:#fff;border-radius:16px;overflow:hidden;
+  box-shadow:0 4px 24px rgba(27,94,32,.12);transition:transform .3s;}
+.ec:hover{transform:translateY(-6px);}
+.eth{height:155px;background:linear-gradient(135deg,#1B5E20,#1A7A20);
+  display:flex;align-items:center;justify-content:center;
+  font-size:52px;position:relative;}
+.en{position:absolute;top:10px;left:10px;background:#F9A825;
+  color:#0D2137;font-size:10px;font-weight:900;
+  padding:3px 9px;border-radius:10px;}
+.eb{padding:18px;}
+.etg{font-size:10px;font-weight:800;color:#E65100;
+  letter-spacing:2px;text-transform:uppercase;margin-bottom:7px;}
+.ett{font-family:'Playfair Display',serif;font-size:15px;
+  font-weight:700;color:#0D2137;margin-bottom:9px;line-height:1.4;}
+.ehk{font-size:12.5px;color:#666;line-height:1.5;margin-bottom:12px;}
+.em2{display:flex;justify-content:space-between;align-items:center;}
+.ed{font-size:11px;font-weight:700;color:#1B5E20;
+  background:#E8F5E9;padding:3px 9px;border-radius:9px;}
+.ew{font-size:12px;font-weight:800;color:#E65100;
+  text-decoration:none;transition:opacity .2s;}
+.ew:hover{opacity:.7;}
+
+/* === ABOUT === */
+.abtsec{background:#1B5E20;padding:80px 60px;
+  display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+.atx{color:#fff;}
+.atx .st{color:#fff;text-align:left;}
+.atx .ss{color:rgba(255,255,255,.7);text-align:left;margin-left:0;}
+.af{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:30px;}
+.fc{background:rgba(255,255,255,.1);border-radius:12px;
+  padding:18px 14px;border:1px solid rgba(255,255,255,.15);}
+.fi{font-size:26px;margin-bottom:7px;display:block;}
+.ft{font-size:13px;font-weight:800;color:#F9A825;margin-bottom:3px;}
+.fd{font-size:12.5px;color:rgba(255,255,255,.72);line-height:1.5;}
+.av{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.ag{background:rgba(255,255,255,.1);border-radius:14px;padding:22px 16px;
+  text-align:center;border:1px solid rgba(255,255,255,.18);transition:background .3s;}
+.ag:hover{background:rgba(255,255,255,.17);}
+.ae{font-size:34px;margin-bottom:7px;display:block;}
+.ar2{font-size:17px;font-weight:900;color:#F9A825;}
+.alb{font-size:11px;color:rgba(255,255,255,.65);margin-top:3px;}
+
+/* === CTA === */
+.cta{background:#E65100;padding:60px;text-align:center;}
+.cta h2{font-family:'Playfair Display',serif;
+  font-size:clamp(22px,3.5vw,40px);color:#fff;font-weight:900;margin-bottom:14px;}
+.cta p{color:rgba(255,255,255,.85);font-size:16px;margin-bottom:28px;}
+.cta .bp{background:#fff;color:#E65100;}
+
+/* === EMAIL === */
+.eml{background:#0D2137;padding:68px 60px;text-align:center;}
+.eml h2{font-family:'Playfair Display',serif;font-size:30px;
+  color:#fff;margin-bottom:10px;}
+.eml p{color:rgba(255,255,255,.68);font-size:14px;margin-bottom:26px;}
+.ef{display:flex;gap:10px;justify-content:center;
+  max-width:480px;margin:0 auto;flex-wrap:wrap;}
+.ef input{flex:1;min-width:220px;padding:13px 18px;
+  border-radius:50px;border:none;font-size:14px;font-family:'Nunito',sans-serif;}
+.ef button{background:#F9A825;color:#0D2137;padding:13px 26px;
+  border-radius:50px;border:none;font-size:14px;font-weight:800;
+  cursor:pointer;font-family:'Nunito',sans-serif;}
+.en2{font-size:11px;color:rgba(255,255,255,.4);margin-top:10px;}
+
+/* === FOOTER === */
+footer{background:#1B5E20;padding:44px 60px 22px;}
+.ftop{display:grid;grid-template-columns:2fr 1fr 1fr;gap:38px;margin-bottom:38px;}
+.fbr{font-family:'Playfair Display',serif;font-size:21px;
+  font-weight:900;color:#fff;margin-bottom:10px;}
+.fbr span{color:#F9A825;}
+.fde{font-size:13px;color:rgba(255,255,255,.62);line-height:1.6;}
+.fh{font-size:12px;font-weight:800;color:#F9A825;letter-spacing:2px;margin-bottom:14px;}
+.fl{list-style:none;}
+.fl li{margin-bottom:9px;}
+.fl a{color:rgba(255,255,255,.68);text-decoration:none;
+  font-size:13.5px;transition:color .2s;}
+.fl a:hover{color:#fff;}
+.fbt{border-top:1px solid rgba(255,255,255,.14);padding-top:18px;
+  display:flex;justify-content:space-between;align-items:center;}
+.fbt p{font-size:12px;color:rgba(255,255,255,.45);}
+
+/* === UTILITIES === */
+.rv{opacity:0;transform:translateY(28px);transition:all .7s ease;}
+.rv.vs{opacity:1;transform:translateY(0);}
+.fh2{display:none!important;}
+body.em [contenteditable]{outline:1.5px dashed #4CAF50;
+  background:rgba(76,175,80,.05);cursor:text;min-width:1em;min-height:1em;}
+body.em [contenteditable]:focus{outline:2px solid #4CAF50;
+  background:rgba(76,175,80,.09);}
+
+/* === RESPONSIVE === */
+@media(max-width:880px){
+  nav{padding:12px 18px;}.nl{gap:14px;}
+  .hero{grid-template-columns:1fr;padding:56px 22px;}
+  .hv{display:none;}
+  .sec,.esec{padding:56px 22px;}.pg{grid-template-columns:1fr 1fr;}
+  .abtsec{grid-template-columns:1fr;padding:56px 22px;}
+  .eg{grid-template-columns:1fr;}
+  .ftop{grid-template-columns:1fr;}
+  .cta,.eml{padding:56px 22px;}
+}
+@media(max-width:580px){
+  .pg{grid-template-columns:1fr;}.hst{gap:14px;}
+  #AP{padding:24px 18px;}
+}
+</style>
+</head>
+<body>
+
+<!-- PASSWORD GATE -->
+<div id="PG">
+  <div id="PB">
+    <h3>🔒 Admin Access</h3>
+    <p>Enter your admin password to continue.</p>
+    <input id="PI" type="password" autocomplete="off"
+           autocorrect="off" autocapitalize="off"
+           spellcheck="false" maxlength="64" placeholder="••••••••••••">
+    <div id="PE"></div>
+    <button id="PS">Unlock Panel</button>
+    <button id="PC" onclick="cPW()">Cancel</button>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="AO">
+  <div id="AP">
+    <h2>⚙️ Admin Control Panel</h2>
+
+    <div class="ase">Page Sections — Push Button ON / OFF</div>
+    <div class="tr"><div class="ti"><div class="tl">🎥 Hero Video Embed</div><div class="td">Show YouTube video in hero section</div></div><label class="sw"><input type="checkbox" id="sv" checked><span class="sk"></span></label></div>
+    <div class="tr"><div class="ti"><div class="tl">🌿 Content Pillars Section</div><div class="td">Show the 6 science pillar cards</div></div><label class="sw"><input type="checkbox" id="sp" checked><span class="sk"></span></label></div>
+    <div class="tr"><div class="ti"><div class="tl">📺 Featured Episodes</div><div class="td">Show featured episode cards</div></div><label class="sw"><input type="checkbox" id="se" checked><span class="sk"></span></label></div>
+    <div class="tr"><div class="ti"><div class="tl">👤 About Section</div><div class="td">Show About Rohit Kumar section</div></div><label class="sw"><input type="checkbox" id="sa" checked><span class="sk"></span></label></div>
+    <div class="tr"><div class="ti"><div class="tl">📣 Subscribe CTA Strip</div><div class="td">Show orange call-to-action banner</div></div><label class="sw"><input type="checkbox" id="sc" checked><span class="sk"></span></label></div>
+    <div class="tr"><div class="ti"><div class="tl">📧 Email Newsletter Section</div><div class="td">Show email signup form</div></div><label class="sw"><input type="checkbox" id="sm" checked><span class="sk"></span></label></div>
+
+    <div class="ase">YouTube Channel &amp; Video</div>
+    <span class="al">YouTube Channel URL — applied to ALL buttons on page</span>
+    <input class="ai" id="YU" value="https://www.youtube.com/@SciencewithRohit">
+    <span class="al">Video Embed ID (the text after ?v= in your video URL)</span>
+    <input class="ai" id="YV" placeholder="Example:  dQw4w9WgXcQ">
+    <button class="ab gn" onclick="apYT()">✅ Apply YouTube Links</button>
+
+    <div class="ase">Edit Page Text</div>
+    <span class="al">Hero Tagline (gold text in hero)</span>
+    <input class="ai" id="ET" value="Every Age.">
+    <span class="al">Hero Sub-Description</span>
+    <textarea class="ai" id="ES" rows="3">Scientifically proven facts about plants, human body, nutrition, environment and learning — explained for ages 4 to 60. New video every Monday, Wednesday and Friday.</textarea>
+    <span class="al">Channel Name (shown in navigation)</span>
+    <input class="ai" id="EN" value="SciencewithRohit">
+    <button class="ab gn" onclick="apTX()">✅ Apply Text Changes</button>
+
+    <div class="ase">Full Edit Mode</div>
+    <div class="tr"><div class="ti"><div class="tl">✏️ Click-to-Edit Mode</div><div class="td">Click any text on page to edit directly</div></div><label class="sw"><input type="checkbox" id="em" onchange="tEM(this.checked)"><span class="sk"></span></label></div>
+
+    <div class="ase">Change Admin Password</div>
+    <p style="color:#66BB6A;font-size:12px;margin-bottom:8px;">Must include: Uppercase · lowercase · special character · min 8 chars. <strong style="color:#FFD700;">No hints shown on login screen.</strong></p>
+    <span class="al">New Password</span>
+    <input class="ai" id="P1" type="password" autocomplete="new-password" placeholder="New password">
+    <span class="al">Confirm New Password</span>
+    <input class="ai" id="P2" type="password" autocomplete="new-password" placeholder="Re-enter new password">
+    <div id="PM" class="am"></div>
+    <button class="ab gl" onclick="chPW()">🔑 Save New Password</button>
+
+    <div class="ar">
+      <button class="ab rd" onclick="cAd()">✕ Close</button>
+      <button class="ab gn" onclick="lkEx()">🔒 Lock &amp; Exit</button>
+    </div>
+  </div>
+</div>
+
+<div id="EB">✏️ EDIT MODE — Click any text to edit it. Toggle off in Admin Panel.</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nb" id="NB">Science<span>with</span>Rohit</div>
+  <div class="nl">
+    <a href="#episodes">Episodes</a>
+    <a href="#pillars">Topics</a>
+    <a href="#about">About</a>
+    <a href="#newsletter">Newsletter</a>
+    <a id="NYT" href="https://www.youtube.com/@SciencewithRohit" target="_blank" class="nc YL">▶ YouTube</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="ld">🌿</div><div class="ld">🍃</div><div class="ld">🌱</div>
+  <div class="ht">
+    <div class="hb">🎓 Education Influencer — India</div>
+    <h1 class="hti">Science for<br><span id="HTG" contenteditable="false">Every Age.</span><br>Facts for Every Life.</h1>
+    <p class="hs" id="HSD" contenteditable="false">Scientifically proven facts about plants, human body, nutrition, environment and learning — explained for ages 4 to 60. New video every Monday, Wednesday and Friday.</p>
+    <div class="hst">
+      <div><div class="sn">500+</div><div class="sl">EPISODES PLANNED</div></div>
+      <div><div class="sn">6</div><div class="sl">SCIENCE PILLARS</div></div>
+      <div><div class="sn">4–60</div><div class="sl">AGE RANGE</div></div>
+      <div><div class="sn">3×</div><div class="sl">WEEKLY VIDEOS</div></div>
+    </div>
+    <div class="hbtn">
+      <a id="HYT" href="https://www.youtube.com/@SciencewithRohit" target="_blank" class="bp YL">▶ Watch on YouTube</a>
+      <a href="#episodes" class="bs">Browse All Episodes</a>
+    </div>
+  </div>
+  <div class="hv" id="SV">
+    <div class="vw" id="VW">
+      <div class="vp" id="VP">🎬<br><br>Enter your YouTube Video ID<br>in the Admin Panel to show your video here</div>
+    </div>
+    <p class="vl">▶ Latest Episode — New Videos Mon · Wed · Fri</p>
+  </div>
+</section>
+
+<!-- PILLARS -->
+<section class="sec" id="pillars" data-s="pillars">
+  <h2 class="st rv">6 Science Pillars</h2>
+  <p class="ss rv">Every video is scientifically backed. Every episode answers a real question. Every topic serves every age.</p>
+  <div class="pg">
+    <div class="pc rv"><span class="pi">🌿</span><div class="pn">PILLAR 1 · 150 EPISODES</div><h3 class="ptt" contenteditable="false">Plant Science &amp; Gardening</h3><p class="pd" contenteditable="false">What is this plant? Proven benefits, harms, and how to grow. From Tulsi to Neem to NASA-tested air purifiers.</p><span class="pk">150 Episodes</span></div>
+    <div class="pc rv"><span class="pi">🧠</span><div class="pn">PILLAR 2 · 110 EPISODES</div><h3 class="ptt" contenteditable="false">Human Body &amp; Health</h3><p class="pd" contenteditable="false">How your heart, brain, gut, skin, bones work. Science for kids, adults and seniors — all in one video.</p><span class="pk">110 Episodes</span></div>
+    <div class="pc rv"><span class="pi">🍎</span><div class="pn">PILLAR 3 · 100 EPISODES</div><h3 class="ptt" contenteditable="false">Nutrition &amp; Food Science</h3><p class="pd" contenteditable="false">What does this food do inside your body? From Indian dal-rice to superfoods — all evidence-based.</p><span class="pk">100 Episodes</span></div>
+    <div class="pc rv"><span class="pi">🔬</span><div class="pn">PILLAR 4 · 50 EPISODES</div><h3 class="ptt" contenteditable="false">Everyday Science &amp; Experiments</h3><p class="pd" contenteditable="false">Why is the sky blue? How does soap work? Home experiments that make science unforgettable.</p><span class="pk">50 Episodes</span></div>
+    <div class="pc rv"><span class="pi">🌍</span><div class="pn">PILLAR 5 · 30 EPISODES</div><h3 class="ptt" contenteditable="false">Environment &amp; Sustainability</h3><p class="pd" contenteditable="false">Climate science, plastic pollution, water crisis. Simple science with real-world Indian relevance.</p><span class="pk">30 Episodes</span></div>
+    <div class="pc rv"><span class="pi">📚</span><div class="pn">PILLAR 6 · 60 EPISODES</div><h3 class="ptt" contenteditable="false">Brain, Learning &amp; Study Skills</h3><p class="pd" contenteditable="false">How your brain learns, why you forget, how to study 4× more effectively. For all ages.</p><span class="pk">60 Episodes</span></div>
+  </div>
+</section>
+
+<!-- EPISODES -->
+<section class="esec" id="episodes" data-s="episodes">
+  <h2 class="st rv">Featured Episodes</h2>
+  <p class="ss rv">Hook → Science → Benefits → How-To → Action. 3 minutes that change how you see the world.</p>
+  <div class="eg">
+    <div class="ec rv"><div class="eth">🌿<div class="en">EP 1</div></div><div class="eb"><div class="etg">🌿 Plant Science</div><h3 class="ett" contenteditable="false">What is Tulsi? 5 Scientifically Proven Benefits + How to Grow</h3><p class="ehk" contenteditable="false">Tulsi reduces stress hormones 40% — 6 clinical studies confirm it. Here is the science plus a grow guide.</p><div class="em2"><span class="ed">⏱ 3 min</span><a class="ew YL" href="https://www.youtube.com/@SciencewithRohit" target="_blank">Watch Now →</a></div></div></div>
+    <div class="ec rv"><div class="eth" style="background:linear-gradient(135deg,#0D47A1,#1565C0)">🧠<div class="en">EP 152</div></div><div class="eb"><div class="etg">🧠 Human Body</div><h3 class="ett" contenteditable="false">Brain vs Computer: Which Is More Powerful? Real Science</h3><p class="ehk" contenteditable="false">86 billion neurons, 100 trillion connections. Is your brain more powerful than the fastest computer?</p><div class="em2"><span class="ed">⏱ 3 min</span><a class="ew YL" href="https://www.youtube.com/@SciencewithRohit" target="_blank">Watch Now →</a></div></div></div>
+    <div class="ec rv"><div class="eth" style="background:linear-gradient(135deg,#E65100,#BF360C)">🍎<div class="en">EP 213</div></div><div class="eb"><div class="etg">🍎 Nutrition</div><h3 class="ett" contenteditable="false">Indian Thali: Why Science Calls It the World's Most Complete Meal</h3><p class="ehk" contenteditable="false">Roti + dal + sabzi + curd + pickle hits every nutrient category. Here is why ancient Indians were right.</p><div class="em2"><span class="ed">⏱ 3 min</span><a class="ew YL" href="https://www.youtube.com/@SciencewithRohit" target="_blank">Watch Now →</a></div></div></div>
+    <div class="ec rv"><div class="eth" style="background:linear-gradient(135deg,#4A148C,#6A1B9A)">🔬<div class="en">EP 261</div></div><div class="eb"><div class="etg">🔬 Everyday Science</div><h3 class="ett" contenteditable="false">Why Is the Sky Blue? Rayleigh Scattering for Kids</h3><p class="ehk" contenteditable="false">Sunlight hits tiny molecules and blue scatters most. Science so simple even a 4-year-old understands.</p><div class="em2"><span class="ed">⏱ 3 min</span><a class="ew YL" href="https://www.youtube.com/@SciencewithRohit" target="_blank">Watch Now →</a></div></div></div>
+    <div class="ec rv"><div class="eth" style="background:linear-gradient(135deg,#004D40,#00695C)">🌍<div class="en">EP 301</div></div><div class="eb"><div class="etg">🌍 Environment</div><h3 class="ett" contenteditable="false">Climate Change: What Is Really Happening — The Data</h3><p class="ehk" contenteditable="false">CO2 at 420ppm, temperature up 1.2°C — what do these numbers mean for India? Science, no politics.</p><div class="em2"><span class="ed">⏱ 3 min</span><a class="ew YL" href="https://www.youtube.com/@SciencewithRohit" target="_blank">Watch Now →</a></div></div></div>
+    <div class="ec rv"><div class="eth" style="background:linear-gradient(135deg,#B8860B,#F9A825)">📚<div class="en">EP 332</div></div><div class="eb"><div class="etg">📚 Learning Science</div><h3 class="ett" contenteditable="false">Spaced Repetition: Study 4× Less, Remember 300% More!</h3><p class="ehk" contenteditable="false">The forgetting curve + spaced repetition = 300% better retention. The science every student needs.</p><div class="em2"><span class="ed">⏱ 4 min</span><a class="ew YL" href="https://www.youtube.com/@SciencewithRohit" target="_blank">Watch Now →</a></div></div></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="abtsec" id="about" data-s="about">
+  <div class="atx">
+    <h2 class="st rv">About Rohit Kumar</h2>
+    <p class="ss rv" contenteditable="false">Education influencer and science communicator. Every Indian — from 4 to 60 — deserves to understand the science behind the world they live in.</p>
+    <div class="af">
+      <div class="fc"><span class="fi">🎯</span><div class="ft">Evidence Only</div><div class="fd" contenteditable="false">Every claim cites a real study. No myths. Science-first.</div></div>
+      <div class="fc"><span class="fi">🇮🇳</span><div class="ft">India-Relevant</div><div class="fd" contenteditable="false">Indian plants, food, and context. Global science, local examples.</div></div>
+      <div class="fc"><span class="fi">📱</span><div class="ft">3 Min Format</div><div class="fd" contenteditable="false">Watch with your morning chai. Packed enough to share immediately.</div></div>
+      <div class="fc"><span class="fi">🔄</span><div class="ft">Never Stops</div><div class="fd" contenteditable="false">500 episodes planned. New science Mon, Wed and Fri.</div></div>
+    </div>
+  </div>
+  <div class="av">
+    <div class="ag"><span class="ae">🧒</span><div class="ar2">Age 4–10</div><div class="alb">Simple wonder + visuals</div></div>
+    <div class="ag"><span class="ae">🎒</span><div class="ar2">Age 11–18</div><div class="alb">Study skills + exam science</div></div>
+    <div class="ag"><span class="ae">💼</span><div class="ar2">Age 19–40</div><div class="alb">Health + nutrition + career</div></div>
+    <div class="ag"><span class="ae">🧓</span><div class="ar2">Age 41–60+</div><div class="alb">Senior health + plants + food</div></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta" data-s="cta">
+  <h2 contenteditable="false">Ready to Learn Something New Today?</h2>
+  <p contenteditable="false">500 episodes of science facts, plant guides, health tips — all free on YouTube.</p>
+  <a id="CYT" href="https://www.youtube.com/@SciencewithRohit" target="_blank" class="bp YL">▶ Subscribe to SciencewithRohit</a>
+</section>
+
+<!-- EMAIL -->
+<section class="eml" id="newsletter" data-s="email">
+  <h2 contenteditable="false">Get Science in Your Inbox</h2>
+  <p contenteditable="false">Weekly: 1 plant fact + 1 body fact + 1 study tip. Free. No spam.</p>
+  <div class="ef">
+    <input type="email" placeholder="Your email address" required>
+    <button type="button">Subscribe Free →</button>
+  </div>
+  <p class="en2">Join thousands of curious Indians learning science every week</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ftop">
+    <div>
+      <div class="fbr">Science<span>with</span>Rohit</div>
+      <p class="fde" contenteditable="false">India's science education channel for every age. New video every Monday, Wednesday, and Friday.</p>
+    </div>
+    <div>
+      <div class="fh">EPISODES</div>
+      <ul class="fl">
+        <li><a href="#">🌿 Plant Science (150 Ep)</a></li>
+        <li><a href="#">🧠 Human Body (110 Ep)</a></li>
+        <li><a href="#">🍎 Nutrition (100 Ep)</a></li>
+        <li><a href="#">🔬 Science (50 Ep)</a></li>
+        <li><a href="#">🌍 Environment (30 Ep)</a></li>
+        <li><a href="#">📚 Study Skills (60 Ep)</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="fh">CONNECT</div>
+      <ul class="fl">
+        <li><a id="FYT" href="https://www.youtube.com/@SciencewithRohit" target="_blank" class="YL">▶ YouTube Channel</a></li>
+        <li><a href="#">📸 Instagram</a></li>
+        <li><a href="#">📘 Facebook</a></li>
+        <li><a href="#">🐦 Twitter / X</a></li>
+        <li><a href="mailto:sciencewithrokit@gmail.com">✉ Contact Rohit</a></li>
+        <li><a href="#">🤝 Brand Collaborations</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="fbt">
+    <p>© 2026 SciencewithRohit. All rights reserved.</p>
+    <p>Science for Every Age · Made with 💚 in India</p>
+  </div>
+</footer>
+
+<button id="ABT" onclick="oAd()">⚙ Admin</button>
+
+<script>
+(function(){
+'use strict';
+/* ── Password persists via localStorage ── */
+var K='swr_pw2';
+var DEFAULT='Weloveyouall@20';
+function ldPW(){try{return localStorage.getItem(K)||DEFAULT;}catch(e){return DEFAULT;}}
+function svPW(p){try{localStorage.setItem(K,p);}catch(e){}}
+var PW=ldPW(), UL=false;
+
+/* Gate */
+window.oAd=function(){if(UL){sPnl();return;}document.getElementById('PG').classList.add('on');setTimeout(function(){document.getElementById('PI').focus();},60);};
+window.cPW=function(){document.getElementById('PG').classList.remove('on');document.getElementById('PI').value='';document.getElementById('PE').textContent='';};
+function chk(){
+  var v=document.getElementById('PI').value;
+  if(v===PW){UL=true;cPW();sPnl();}
+  else{document.getElementById('PE').textContent='Incorrect password. Try again.';document.getElementById('PI').value='';document.getElementById('PI').focus();}
+}
+document.getElementById('PI').addEventListener('keydown',function(e){if(e.key==='Enter')chk();});
+document.getElementById('PS').addEventListener('click',chk);
+document.getElementById('PC').addEventListener('click',function(){cPW();});
+
+/* Panel */
+function sPnl(){syT();document.getElementById('AO').classList.add('on');}
+window.cAd=function(){document.getElementById('AO').classList.remove('on');};
+window.lkEx=function(){cAd();UL=false;};
+
+/* Sync toggles */
+function gS(k){return document.querySelector('[data-s="'+k+'"]');}
+function syT(){
+  var m={sv:'video',sp:'pillars',se:'episodes',sa:'about',sc:'cta',sm:'email'};
+  Object.keys(m).forEach(function(id){
+    var el=m[id]==='video'?document.getElementById('SV'):gS(m[id]);
+    var cb=document.getElementById(id);
+    if(el&&cb)cb.checked=!el.classList.contains('fh2');
+  });
+}
+function bT(id,key){
+  document.getElementById(id).addEventListener('change',function(){
+    var el=key==='video'?document.getElementById('SV'):gS(key);
+    if(el)el.classList.toggle('fh2',!this.checked);
+  });
+}
+bT('sv','video');bT('sp','pillars');bT('se','episodes');
+bT('sa','about');bT('sc','cta');bT('sm','email');
+
+/* YouTube */
+window.apYT=function(){
+  var u=document.getElementById('YU').value.trim();
+  var v=document.getElementById('YV').value.trim();
+  if(!u){alert('Enter your YouTube channel URL first.');return;}
+  document.querySelectorAll('.YL').forEach(function(a){a.href=u;});
+  var vw=document.getElementById('VW');
+  if(v){vw.innerHTML='<iframe src="https://www.youtube.com/embed/'+v+'?rel=0" width="100%" height="100%" frameborder="0" allowfullscreen style="border-radius:14px;border:none;"></iframe>';}
+  else{vw.innerHTML='<div class="vp">🎬<br><br>Enter your YouTube Video ID in Admin Panel</div>';}
+  alert('Done! All YouTube buttons updated.');
+};
+
+/* Text */
+window.apTX=function(){
+  var t=document.getElementById('ET').value;
+  var s=document.getElementById('ES').value;
+  var n=document.getElementById('EN').value;
+  if(t)document.getElementById('HTG').textContent=t;
+  if(s)document.getElementById('HSD').textContent=s;
+  if(n){
+    var l=n.toLowerCase(),wi=l.indexOf('with'),nb=document.getElementById('NB');
+    if(wi>0){nb.innerHTML=n.slice(0,wi)+'<span>'+n.slice(wi,wi+4)+'</span>'+n.slice(wi+4);}
+    else{nb.textContent=n;}
+    var fb=document.querySelector('.fbr');if(fb)fb.innerHTML=nb.innerHTML;
+  }
+  alert('Text changes applied!');
+};
+
+/* Edit mode */
+window.tEM=function(on){
+  document.body.classList.toggle('em',on);
+  document.getElementById('EB').classList.toggle('on',on);
+  document.querySelectorAll('[contenteditable]').forEach(function(el){el.contentEditable=on?'true':'false';});
+};
+
+/* Change password — saves to localStorage */
+window.chPW=function(){
+  var p1=document.getElementById('P1').value;
+  var p2=document.getElementById('P2').value;
+  var m=document.getElementById('PM');
+  var err=function(t){m.className='am er';m.textContent=t;};
+  if(p1.length<8){err('Minimum 8 characters required.');return;}
+  if(!/[A-Z]/.test(p1)){err('Must include at least one UPPERCASE letter.');return;}
+  if(!/[a-z]/.test(p1)){err('Must include at least one lowercase letter.');return;}
+  if(!/[^a-zA-Z0-9]/.test(p1)){err('Must include at least one special character (! @ # etc).');return;}
+  if(p1!==p2){err('Passwords do not match. Please re-enter.');return;}
+  svPW(p1);PW=p1;
+  document.getElementById('P1').value='';
+  document.getElementById('P2').value='';
+  m.className='am ok';
+  m.textContent='✅ Password saved! Works immediately and after page refresh.';
+  setTimeout(function(){m.textContent='';},6000);
+};
+
+/* Scroll reveal */
+var ro=new IntersectionObserver(function(ens){ens.forEach(function(e){if(e.isIntersecting)e.target.classList.add('vs');});},{threshold:0.08});
+document.querySelectorAll('.rv').forEach(function(el){ro.observe(el);});
+
+})();
+</script>
+</body>
+</html>
